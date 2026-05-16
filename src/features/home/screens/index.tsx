@@ -3,6 +3,7 @@ import { Animated, StyleSheet, ScrollView, View } from 'react-native';
 import { Icon, Text, FAB, Portal, useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
 import useIndex from '../hooks/useIndex';
+import { encryptBase64, decryptBase64 } from '../../../lib/cryptCore';
 
 export default function IndexScreen() {
   const { colors } = useTheme();
@@ -35,13 +36,28 @@ export default function IndexScreen() {
             icon: 'lock-open-variant',
             label: 'Decrypt',
             style: { backgroundColor: colors.primaryContainer },
-            onPress: () => console.log('Pressed lock'),
+            onPress: async () => {
+              try {
+                const encrypted = await encryptBase64('SGVsbG8sIHdvcmxkIQ==', 'password');
+                const plaintext = await decryptBase64(encrypted, 'password');
+                console.log('Native decrypt result:', plaintext);
+              } catch (error) {
+                console.error('CryptCore error', error);
+              }
+            },
           },
           {
             icon: 'lock',
             label: 'Encrypt',
             style: { backgroundColor: colors.primaryContainer },
-            onPress: () => console.log('Pressed lock-open'),
+            onPress: async () => {
+              try {
+                const result = await encryptBase64('SGVsbG8sIHdvcmxkIQ==', 'password');
+                console.log('Native encrypt result:', result);
+              } catch (error) {
+                console.error('CryptCore error', error);
+              }
+            },
           },
         ]}
         onStateChange={onStateChange}

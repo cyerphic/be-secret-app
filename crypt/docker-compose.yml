@@ -1,0 +1,24 @@
+version: '3.3'
+
+services:
+  crypt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - .:/app
+      - ./android:/app/android
+      - /app/target
+
+    # step 1: genetate libcrypt_core.so
+    #command: cargo ndk -t arm64-v8a -o ./android/jniLibs build --release
+
+    # step 2: generate crypt_core.kt
+    command: >
+      sh -c "
+      cargo run --bin uniffi-bindgen -- generate \
+        --library ./android/jniLibs/arm64-v8a/libcrypt_core.so \
+        --language kotlin \
+        --out-dir ./android/bindings
+      "  

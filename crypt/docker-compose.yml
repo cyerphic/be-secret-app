@@ -21,4 +21,4 @@ services:
         --library ./android/jniLibs/arm64-v8a/libcrypt_core.so \
         --language kotlin \
         --out-dir ./android/bindings
-      "  
+      "

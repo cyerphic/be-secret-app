@@ -62,7 +62,7 @@ pub fn decrypt_bytes(data: &[u8], pwd: &str) -> Result<Vec<u8>, CryptoError> {
 
     let version = data[offset];
     if version != VERSION {
-        return Err(CryptoError::UnsupportedVersion(version));
+        return Err(CryptoError::UnsupportedVersion { version });
     }
     offset += 1;
 

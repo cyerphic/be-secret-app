@@ -68,7 +68,7 @@ pub fn decrypt_file(in_p: &str, out_p: &str, pwd: &str) -> Result<(), CryptoErro
     let mut version_byte = [0u8; 1];
     reader.read_exact(&mut version_byte)?;
     if version_byte[0] != VERSION {
-        return Err(CryptoError::UnsupportedVersion(version_byte[0]));
+        return Err(CryptoError::UnsupportedVersion { version: version_byte[0] });
     }
 
     let mut salt = [0u8; SALT_SIZE];

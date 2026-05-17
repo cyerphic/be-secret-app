@@ -996,10 +996,10 @@ sealed class CryptoException: Exception() {
     
     class UnsupportedVersion(
         
-        val ``: kotlin.UByte
+        val `version`: kotlin.UByte
         ) : CryptoException() {
         override val message
-            get() = "=${ `` }"
+            get() = "version=${ `version` }"
     }
     
     class AuthenticationFailed(
@@ -1010,10 +1010,10 @@ sealed class CryptoException: Exception() {
     
     class Kdf(
         
-        val ``: kotlin.String
+        val `message`: kotlin.String
         ) : CryptoException() {
         override val message
-            get() = "=${ `` }"
+            get() = "message=${ `message` }"
     }
     
     class Encryption(
@@ -1024,10 +1024,10 @@ sealed class CryptoException: Exception() {
     
     class Io(
         
-        val ``: kotlin.String
+        val `message`: kotlin.String
         ) : CryptoException() {
         override val message
-            get() = "=${ `` }"
+            get() = "message=${ `message` }"
     }
     
 
@@ -1068,7 +1068,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             is CryptoException.UnsupportedVersion -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
                 4UL
-                + FfiConverterUByte.allocationSize(value.``)
+                + FfiConverterUByte.allocationSize(value.`version`)
             )
             is CryptoException.AuthenticationFailed -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
@@ -1077,7 +1077,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             is CryptoException.Kdf -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
                 4UL
-                + FfiConverterString.allocationSize(value.``)
+                + FfiConverterString.allocationSize(value.`message`)
             )
             is CryptoException.Encryption -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
@@ -1086,7 +1086,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             is CryptoException.Io -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
                 4UL
-                + FfiConverterString.allocationSize(value.``)
+                + FfiConverterString.allocationSize(value.`message`)
             )
         }
     }
@@ -1099,7 +1099,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             }
             is CryptoException.UnsupportedVersion -> {
                 buf.putInt(2)
-                FfiConverterUByte.write(value.``, buf)
+                FfiConverterUByte.write(value.`version`, buf)
                 Unit
             }
             is CryptoException.AuthenticationFailed -> {
@@ -1108,7 +1108,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             }
             is CryptoException.Kdf -> {
                 buf.putInt(4)
-                FfiConverterString.write(value.``, buf)
+                FfiConverterString.write(value.`message`, buf)
                 Unit
             }
             is CryptoException.Encryption -> {
@@ -1117,7 +1117,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             }
             is CryptoException.Io -> {
                 buf.putInt(6)
-                FfiConverterString.write(value.``, buf)
+                FfiConverterString.write(value.`message`, buf)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }

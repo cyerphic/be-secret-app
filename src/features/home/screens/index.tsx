@@ -38,9 +38,9 @@ export default function IndexScreen() {
             style: { backgroundColor: colors.primaryContainer },
             onPress: async () => {
               try {
-                const encrypted = await encryptBase64('SGVsbG8sIHdvcmxkIQ==', 'password');
-                const plaintext = await decryptBase64(encrypted, 'password');
-                console.log('Native decrypt result:', plaintext);
+                const encrypted = await encryptBase64('aGVsbG8gd29ybGQ=', '123abC');
+                const plaintext = await decryptBase64(encrypted, '123abC');
+                console.log('decryptBase64 result:', plaintext);
               } catch (error) {
                 console.error('CryptCore error', error);
               }
@@ -52,8 +52,8 @@ export default function IndexScreen() {
             style: { backgroundColor: colors.primaryContainer },
             onPress: async () => {
               try {
-                const result = await encryptBase64('SGVsbG8sIHdvcmxkIQ==', 'password');
-                console.log('Native encrypt result:', result);
+                const encrypted = await encryptBase64('aGVsbG8gd29ybGQ=', '123abC');
+                console.log('encryptBase64 result:', encrypted);
               } catch (error) {
                 console.error('CryptCore error', error);
               }

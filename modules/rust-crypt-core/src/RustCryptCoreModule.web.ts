@@ -20,6 +20,12 @@ class RustCryptCoreModule extends NativeModule<RustCryptCoreModuleEvents> {
   async decryptBase64(): Promise<string> {
     throw new Error('RustCryptCore decryption is only available on native platforms.');
   }
+  async encryptFile(): Promise<void> {
+    throw new Error('RustCryptCore encryption is only available on native platforms.');
+  }
+  async decryptFile(): Promise<void> {
+    throw new Error('RustCryptCore decryption is only available on native platforms.');
+  }
 };
 
 export default registerWebModule(RustCryptCoreModule, 'RustCryptCore');

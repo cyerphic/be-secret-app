@@ -694,6 +694,10 @@ internal interface UniffiForeignFutureCompleteVoid : com.sun.jna.Callback {
 
 
 
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -711,8 +715,12 @@ internal interface UniffiLib : Library {
 
     fun uniffi_crypt_core_fn_func_decrypt_bytes(`data`: RustBuffer.ByValue,`pwd`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    fun uniffi_crypt_core_fn_func_decrypt_file(`inP`: RustBuffer.ByValue,`outP`: RustBuffer.ByValue,`pwd`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
     fun uniffi_crypt_core_fn_func_encrypt_bytes(`plaintext`: RustBuffer.ByValue,`pwd`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    fun uniffi_crypt_core_fn_func_encrypt_file(`inP`: RustBuffer.ByValue,`outP`: RustBuffer.ByValue,`pwd`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
     fun ffi_crypt_core_rustbuffer_alloc(`size`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun ffi_crypt_core_rustbuffer_from_bytes(`bytes`: ForeignBytes.ByValue,uniffi_out_err: UniffiRustCallStatus, 
@@ -827,7 +835,11 @@ internal interface UniffiLib : Library {
     ): Unit
     fun uniffi_crypt_core_checksum_func_decrypt_bytes(
     ): Short
+    fun uniffi_crypt_core_checksum_func_decrypt_file(
+    ): Short
     fun uniffi_crypt_core_checksum_func_encrypt_bytes(
+    ): Short
+    fun uniffi_crypt_core_checksum_func_encrypt_file(
     ): Short
     fun ffi_crypt_core_uniffi_contract_version(
     ): Int
@@ -849,7 +861,13 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_crypt_core_checksum_func_decrypt_bytes() != 58204.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_crypt_core_checksum_func_decrypt_file() != 11460.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_crypt_core_checksum_func_encrypt_bytes() != 9264.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_crypt_core_checksum_func_encrypt_file() != 32391.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
 }
@@ -1134,6 +1152,15 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
     }
     
 
+    @Throws(CryptoException::class) fun `decryptFile`(`inP`: kotlin.String, `outP`: kotlin.String, `pwd`: kotlin.String)
+        = 
+    uniffiRustCallWithError(CryptoException) { _status ->
+    UniffiLib.INSTANCE.uniffi_crypt_core_fn_func_decrypt_file(
+        FfiConverterString.lower(`inP`),FfiConverterString.lower(`outP`),FfiConverterString.lower(`pwd`),_status)
+}
+    
+    
+
     @Throws(CryptoException::class) fun `encryptBytes`(`plaintext`: kotlin.ByteArray, `pwd`: kotlin.String): kotlin.ByteArray {
             return FfiConverterByteArray.lift(
     uniffiRustCallWithError(CryptoException) { _status ->
@@ -1142,6 +1169,15 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
 }
     )
     }
+    
+
+    @Throws(CryptoException::class) fun `encryptFile`(`inP`: kotlin.String, `outP`: kotlin.String, `pwd`: kotlin.String)
+        = 
+    uniffiRustCallWithError(CryptoException) { _status ->
+    UniffiLib.INSTANCE.uniffi_crypt_core_fn_func_encrypt_file(
+        FfiConverterString.lower(`inP`),FfiConverterString.lower(`outP`),FfiConverterString.lower(`pwd`),_status)
+}
+    
     
 
 

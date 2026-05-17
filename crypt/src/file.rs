@@ -9,7 +9,7 @@ use crate::constants::*;
 use crate::error::CryptoError;
 use crate::kdf::derive_key;
 
-pub fn encrypt_file(in_p: &str, out_p: &str, pwd: &str) -> Result<(), CryptoError> {
+pub fn encrypt_file_stream(in_p: &str, out_p: &str, pwd: &str) -> Result<(), CryptoError> {
     let mut reader = BufReader::new(File::open(in_p)?);
     let mut writer = BufWriter::new(
         OpenOptions::new()
@@ -55,7 +55,7 @@ pub fn encrypt_file(in_p: &str, out_p: &str, pwd: &str) -> Result<(), CryptoErro
     Ok(())
 }
 
-pub fn decrypt_file(in_p: &str, out_p: &str, pwd: &str) -> Result<(), CryptoError> {
+pub fn decrypt_file_stream(in_p: &str, out_p: &str, pwd: &str) -> Result<(), CryptoError> {
     let mut reader = BufReader::new(File::open(in_p)?);
     let mut writer = BufWriter::new(File::create(out_p)?);
 

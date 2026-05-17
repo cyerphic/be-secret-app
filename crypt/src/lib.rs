@@ -7,7 +7,7 @@ mod file;
 
 pub use error::CryptoError;
 
-pub use file::{decrypt_file, encrypt_file};
+use file::{decrypt_file_stream, encrypt_file_stream};
 
 use aes_gcm::{Aes256Gcm, Key, KeyInit};
 use rand::{thread_rng, RngCore};
@@ -92,4 +92,14 @@ pub fn decrypt_bytes(data: &[u8], pwd: &str) -> Result<Vec<u8>, CryptoError> {
     let aad = 0u64.to_le_bytes();
 
     decrypt_chunk(&cipher, &nonce, ciphertext, &aad)
+}
+
+#[uniffi::export]
+pub fn encrypt_file(in_p: String, out_p: String, pwd: &str) -> Result<(), CryptoError> {
+    encrypt_file_stream(&in_p, &out_p, pwd)
+}
+
+#[uniffi::export]
+pub fn decrypt_file(in_p: String, out_p: String, pwd: &str) -> Result<(), CryptoError> {
+    decrypt_file_stream(&in_p, &out_p, pwd)
 }

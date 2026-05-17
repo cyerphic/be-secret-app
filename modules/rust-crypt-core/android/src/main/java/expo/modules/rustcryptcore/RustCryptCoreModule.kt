@@ -6,6 +6,8 @@ import expo.modules.kotlin.modules.ModuleDefinition
 import java.net.URL
 import uniffi.crypt_core.decryptBytes
 import uniffi.crypt_core.encryptBytes
+import uniffi.crypt_core.decryptFile
+import uniffi.crypt_core.encryptFile
 
 class RustCryptCoreModule : Module() {
   // Each module class must implement the definition function. The definition consists of components
@@ -49,6 +51,14 @@ class RustCryptCoreModule : Module() {
       val ciphertext = Base64.decode(ciphertextBase64, Base64.NO_WRAP)
       val plaintext = decryptBytes(ciphertext, password)
       Base64.encodeToString(plaintext, Base64.NO_WRAP)
+    }
+
+    AsyncFunction("encryptFile") { inP: String, outP: String, pwd: String ->
+      encryptFile(inP, outP, pwd)
+    }
+
+    AsyncFunction("decryptFile") { inP: String, outP: String, pwd: String ->
+      decryptFile(inP, outP, pwd)
     }
 
     // Enables the module to be used as a native view. Definition components that are accepted as part of

@@ -1010,10 +1010,10 @@ sealed class CryptoException: Exception() {
     
     class Kdf(
         
-        val `message`: kotlin.String
+        val `details`: kotlin.String
         ) : CryptoException() {
         override val message
-            get() = "message=${ `message` }"
+            get() = "details=${ `details` }"
     }
     
     class Encryption(
@@ -1024,10 +1024,10 @@ sealed class CryptoException: Exception() {
     
     class Io(
         
-        val `message`: kotlin.String
+        val `details`: kotlin.String
         ) : CryptoException() {
         override val message
-            get() = "message=${ `message` }"
+            get() = "details=${ `details` }"
     }
     
 
@@ -1077,7 +1077,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             is CryptoException.Kdf -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
                 4UL
-                + FfiConverterString.allocationSize(value.`message`)
+                + FfiConverterString.allocationSize(value.`details`)
             )
             is CryptoException.Encryption -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
@@ -1086,7 +1086,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             is CryptoException.Io -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
                 4UL
-                + FfiConverterString.allocationSize(value.`message`)
+                + FfiConverterString.allocationSize(value.`details`)
             )
         }
     }
@@ -1108,7 +1108,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             }
             is CryptoException.Kdf -> {
                 buf.putInt(4)
-                FfiConverterString.write(value.`message`, buf)
+                FfiConverterString.write(value.`details`, buf)
                 Unit
             }
             is CryptoException.Encryption -> {
@@ -1117,7 +1117,7 @@ public object FfiConverterTypeCryptoError : FfiConverterRustBuffer<CryptoExcepti
             }
             is CryptoException.Io -> {
                 buf.putInt(6)
-                FfiConverterString.write(value.`message`, buf)
+                FfiConverterString.write(value.`details`, buf)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }

@@ -13,24 +13,24 @@ pub enum CryptoError {
     #[error("authentication failed")]
     AuthenticationFailed,
 
-    #[error("kdf error: {message}")]
+    #[error("kdf error: {details}")]
     Kdf {
-        message: String,
+        details: String,
     },
 
     #[error("encryption failure")]
     Encryption,
 
-    #[error("io error: {message}")]
+    #[error("io error: {details}")]
     Io {
-        message: String,
+        details: String,
     },
 }
 
 impl From<std::io::Error> for CryptoError {
     fn from(err: std::io::Error) -> Self {
         CryptoError::Io {
-            message: err.to_string(),
+            details: err.to_string(),
         }
     }
 }

@@ -17,6 +17,7 @@ services:
     # step 2: generate crypt_core.kt
     command: >
       sh -c "
+      cargo ndk -t arm64-v8a -o ./android/jniLibs build --release &&
       cargo run --bin uniffi-bindgen -- generate \
         --library ./android/jniLibs/arm64-v8a/libcrypt_core.so \
         --language kotlin \

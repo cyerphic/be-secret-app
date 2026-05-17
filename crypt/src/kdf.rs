@@ -7,13 +7,13 @@ pub fn derive_key(password: &str, salt: &[u8]) -> Result<Zeroizing<[u8; 32]>, Cr
     let mut key = [0u8; 32];
 
     let params =
-        Params::new(256 * 1024, 4, 4, Some(32)).map_err(|e| CryptoError::Kdf { message: e.to_string() })?;
+        Params::new(256 * 1024, 4, 4, Some(32)).map_err(|e| CryptoError::Kdf { details: e.to_string() })?;
 
     let argon2 = Argon2::new(Algorithm::Argon2id, Version::V0x13, params);
 
     argon2
         .hash_password_into(password.as_bytes(), salt, &mut key)
-        .map_err(|e| CryptoError::Kdf { message: e.to_string() })?;
+        .map_err(|e| CryptoError::Kdf { details: e.to_string() })?;
 
     Ok(Zeroizing::new(key))
 }

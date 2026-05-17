@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["RustCryptCoreModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.rustcryptcore.RustCryptCoreModule"]
+  }
+}

@@ -6,6 +6,8 @@ declare class RustCryptCoreModule extends NativeModule<RustCryptCoreModuleEvents
   PI: number;
   hello(): string;
   setValueAsync(value: string): Promise<void>;
+  encryptBase64(plaintextBase64: string, password: string): Promise<string>;
+  decryptBase64(ciphertextBase64: string, password: string): Promise<string>;
 }
 
 // This call loads the native module object from the JSI.

@@ -69,7 +69,7 @@ export default function DecryptScreen() {
   return (
     <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
       <Appbar.Header style={{ backgroundColor: colors.surfaceVariant }}>
-        <Appbar.BackAction onPress={() => router.back()} />
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="文件解密" />
       </Appbar.Header>
 

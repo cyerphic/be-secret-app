@@ -1,64 +1,107 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { BottomNavigation, Icon, useTheme } from 'react-native-paper';
+import { StyleSheet, Platform } from 'react-native';
+import { Icon, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../../features/home/screens';
 import SetScreen from '../../features/settings/screens';
 import EncryptScreen from '../../features/home/screens/Encrypt';
 import DecryptScreen from '../../features/home/screens/Decrypt';
 
+export const ROUTES = {
+  TAB_NAVIGATOR: 'Tabs',
+  HOME_TAB: 'HomeTab',
+  SETTINGS_TAB: 'SettingsTab',
+  ENCRYPT: 'Encrypt',
+  DECRYPT: 'Decrypt',
+};
+
+const TAB_ICONS = {
+  [ROUTES.HOME_TAB]: {
+    focused: 'dots-horizontal-circle',
+    unfocused: 'dots-horizontal-circle-outline',
+  },
+  [ROUTES.SETTINGS_TAB]: {
+    focused: 'cog',
+    unfocused: 'cog-outline',
+  },
+};
+
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'home', focusedIcon: 'file-lock', unfocusedIcon: 'file-lock-outline' },
-    { key: 'set', focusedIcon: 'cog', unfocusedIcon: 'cog-outline' },
-  ]);
 
-  const renderScene = BottomNavigation.SceneMap({
-    home: HomeScreen,
-    set: SetScreen,
-  });
+  const renderTabBarIcon = (route, focused, color) => {
+    const iconName = focused 
+      ? TAB_ICONS[route.name].focused 
+      : TAB_ICONS[route.name].unfocused;
+      
+    return <Icon source={iconName} color={color} size={36} />;
+  };
 
   return (
-    <View style={styles.container}>
-      <BottomNavigation 
-        navigationState={{ index, routes }} 
-        onIndexChange={setIndex} 
-        renderScene={renderScene}
-        labeled={false}
-        theme={{
-          colors: { surface: colors.surface, secondaryContainer: 'transparent' }
-        }}
-        safeAreaInsets={{ bottom: 0 }}
-        barStyle={[
-          styles.bottomBar, 
-          { height: 60 + insets.bottom, paddingBottom: insets.bottom }
-        ]}
-        renderIcon={({ route, focused, color }) => (
-          <Icon source={focused ? route.focusedIcon : route.unfocusedIcon} color={color} size={30} />
-        )} 
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.onSurfaceVariant,
+        tabBarIcon: ({ focused, color }) => renderTabBarIcon(route, focused, color),
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            backgroundColor: colors.surface,
+            height: (Platform.OS === 'ios' ? 60 : 65) + insets.bottom,
+            paddingBottom: insets.bottom > 0 ? insets.bottom : 10,
+          },
+        ],
+        tabBarButtonTestID: `tab-${route.name}`,
+      })}
+    >
+      <Tab.Screen 
+        name={ROUTES.HOME_TAB} 
+        component={HomeScreen} 
+        options={{ title: 'Home' }} 
       />
-    </View>
+      <Tab.Screen 
+        name={ROUTES.SETTINGS_TAB} 
+        component={SetScreen} 
+        options={{ title: 'Settings' }} 
+      />
+    </Tab.Navigator>
   );
 }
 
 export default function MainNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Tabs" component={TabNavigator} />
-      <Stack.Screen name="Encrypt" component={EncryptScreen} />
-      <Stack.Screen name="Decrypt" component={DecryptScreen} />
+    <Stack.Navigator 
+      screenOptions={{ 
+        headerShown: false,
+        gestureEnabled: true,
+      }}
+    >
+      <Stack.Screen name={ROUTES.TAB_NAVIGATOR} component={TabNavigator} />
+      <Stack.Screen name={ROUTES.ENCRYPT} component={EncryptScreen} />
+      <Stack.Screen name={ROUTES.DECRYPT} component={DecryptScreen} />
     </Stack.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  bottomBar: { justifyContent: 'center' },
+  tabBar: {
+    borderTopWidth: 0,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
 });

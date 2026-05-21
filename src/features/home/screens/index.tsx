@@ -1,53 +1,114 @@
-// src/features/home/screens/index.tsx
-import React, { memo } from 'react';
-import { StyleSheet, ScrollView, View } from 'react-native';
-import { Text, FAB, useTheme } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import React, { memo, useState } from 'react';
+import { 
+  StyleSheet, 
+  ScrollView, 
+  View, 
+  TextInput 
+} from 'react-native';
+import { IconButton, useTheme } from 'react-native-paper';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import Header from '../../../components/Header';
-import useIndex from '../hooks/useIndex';
 
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
-  const navigation = useNavigation<any>();
-  const { open, onStateChange } = useIndex();
+  const [inputText, setInputText] = useState('');
 
   return (
-    <View style={ styles.page }>
-      <Header style={{ backgroundColor: colors.surface }}/>
-      <ScrollView showsVerticalScrollIndicator={false} removeClippedSubviews={true}>
-        <View style={[styles.container, { backgroundColor: colors.surface }]}>
-          <Text variant='titleMedium' style={styles.statusLabel}>private</Text>
+    <KeyboardAvoidingView 
+      style={styles.page}
+      behavior="padding"
+    >
+      {/* 顶部标题栏 */}
+      <Header style={{ backgroundColor: colors.surface }} header="private" />
+      
+      {/* 消息列表区域 */}
+      <ScrollView 
+        style={styles.messageList}
+        showsVerticalScrollIndicator={false} 
+        removeClippedSubviews={true}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive" 
+      >
+        <View style={styles.messageListContainer}>
+          {/* 这里以后放聊天气泡 */}
         </View>
       </ScrollView>
-      {/*
-      <FAB.Group
-        open={open}
-        visible
-        icon='lock-reset'
-        actions={[
-          {
-            icon: 'lock-open-variant',
-            label: 'Decrypt',
-            style: { backgroundColor: colors.primaryContainer },
-            onPress: () => navigation.navigate('Decrypt')
-          },
-          {
-            icon: 'lock',
-            label: 'Encrypt',
-            style: { backgroundColor: colors.primaryContainer },
-            onPress: () => navigation.navigate('Encrypt')
-          },
-        ]}
-        onStateChange={onStateChange}
-        onPress={() => {}}
-      />
-      */}
-    </View>
+
+      {/* 底部输入框容器 */}
+      <View style={[styles.chatContainer, { backgroundColor: colors.surface }]}>
+        <View style={[
+          styles.inputWrapper, 
+          { backgroundColor: colors.elevation.level2 || '#f0f4f9' }
+        ]}>
+          
+          {/* 左侧：功能按钮 */}
+          <IconButton
+            icon="plus" 
+            size={24}
+            iconColor={colors.onSurfaceVariant}
+            onPress={() => console.log('打开附件')}
+          />
+
+          {/* 中间：多行文本输入框 */}
+          <TextInput
+            style={[styles.input, { color: colors.onSurface }]}
+            placeholder="Message Gemini..."
+            placeholderTextColor={colors.onSurfaceVariant}
+            multiline={true}
+            value={inputText}
+            onChangeText={setInputText}
+          />
+
+          {/* 右侧：发送 / 麦克风 按钮 */}
+          <IconButton
+            icon={inputText.trim().length > 0 ? "send" : "microphone"}
+            size={24}
+            iconColor={inputText.trim().length > 0 ? colors.primary : colors.onSurfaceVariant}
+            onPress={() => {
+              if (inputText.trim().length > 0) {
+                console.log('发送消息:', inputText);
+                setInputText(''); 
+              } else {
+                console.log('开始语音输入...');
+              }
+            }}
+          />
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 });
 
 const styles = StyleSheet.create({
-  page: { flex: 1 },
-  container: { paddingVertical: 8, alignItems: 'center' },
-  statusLabel: { marginBottom: 8, fontWeight: '400' },
+  page: { 
+    flex: 1 
+  },
+  messageList: {
+    flex: 1, 
+  },
+  messageListContainer: { 
+    paddingVertical: 8, 
+    alignItems: 'center' 
+  },
+  chatContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    width: '100%',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-end', 
+    borderRadius: 28,       
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+  },
+  input: {
+    flex: 1,
+    minHeight: 40,
+    maxHeight: 120, 
+    fontSize: 16,
+    paddingTop: 10,  
+    paddingBottom: 10,
+    paddingHorizontal: 8,
+  }
 });

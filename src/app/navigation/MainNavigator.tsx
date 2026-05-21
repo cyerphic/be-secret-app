@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Icon, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -40,8 +40,12 @@ function TabNavigator() {
     const iconName = focused 
       ? TAB_ICONS[route.name].focused 
       : TAB_ICONS[route.name].unfocused;
-      
-    return <Icon source={iconName} color={color} size={36} />;
+
+    return (
+      <View style={styles.iconContainer}>
+        <Icon source={iconName} color={color} size={36} />
+      </View>
+    );  
   };
 
   return (
@@ -52,12 +56,18 @@ function TabNavigator() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.onSurfaceVariant,
         tabBarIcon: ({ focused, color }) => renderTabBarIcon(route, focused, color),
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'visible',
+        },
         tabBarStyle: [
           styles.tabBar,
           {
             backgroundColor: colors.surface,
-            height: (Platform.OS === 'ios' ? 60 : 65) + insets.bottom,
-            paddingBottom: insets.bottom > 0 ? insets.bottom : 10,
+            height: (Platform.OS === 'ios' ? 48 : 52) + insets.bottom,
+            paddingTop: 8,
+            paddingBottom: insets.bottom > 0 ? insets.bottom : 12,
           },
         ],
         tabBarButtonTestID: `tab-${route.name}`,
@@ -96,12 +106,18 @@ const styles = StyleSheet.create({
   tabBar: {
     borderTopWidth: 0,
     elevation: 8,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: -2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
+  },
+  iconContainer: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'visible',
   },
 });

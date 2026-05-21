@@ -24,7 +24,7 @@ services:
       - EXPO_NO_TELEMETRY=1
       - CHOKIDAR_USEPOLLING=true
       - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-      - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.1.6
+      - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.1.3
     networks:
       - be-secret-network
 

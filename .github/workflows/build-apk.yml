@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android Dev APK
 
 on:
   workflow_dispatch:
@@ -38,42 +38,15 @@ jobs:
         run: |
           npx expo prebuild --clean --non-interactive
 
-      - name: Build APK
+      - name: Build Dev APK (Debug)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease
-
-      - name: Sign APK
-        run: |
-          echo "${{ secrets.ANDROID_SIGNING_KEY }}" | base64 -d > ${{ github.workspace }}/my-release-key.keystore
-          
-          cd ${{ github.workspace }}/android/app/build/outputs/apk/release
-          
-          ${{ env.ANDROID_HOME }}/build-tools/34.0.0/zipalign -v 4 app-release.apk aligned.apk
-          
-          ${{ env.ANDROID_HOME }}/build-tools/34.0.0/apksigner sign \
-            --ks ${{ github.workspace }}/my-release-key.keystore \
-            --ks-key-alias "${{ secrets.ANDROID_ALIAS }}" \
-            --ks-pass pass:"${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
-            --key-pass pass:"${{ secrets.ANDROID_KEY_PASSWORD }}" \
-            --out app-release.apk \
-            aligned.apk
-
-      - name: Upload APK
+          ./gradlew assembleDebug
+      
+      - name: Upload Dev APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.apk
-          path: android/app/build/outputs/apk/release/app-release.apk
-          retention-days: 30
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: android/app/build/outputs/apk/release/app-release.apk
-          tag_name: v1.0.${{ github.run_number }}
-          name: "Release v1.0.${{ github.run_number }}"
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14

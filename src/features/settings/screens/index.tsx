@@ -10,18 +10,11 @@ export default memo(function IndexScreen() {
 
   return (
     <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
-      <Header />
-      <ScrollView showsVerticalScrollIndicator={false} removeClippedSubviews={true}>
-        <View style={styles.container}>
-          <Text variant='titleMedium' style={styles.statusLabel}>setting</Text>
-        </View>
-      </ScrollView>
+      <Header style={{ backgroundColor: colors.surface }} header="setting" />
     </View>
   );
 });
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
-  container: { padding: 20, alignItems: 'center' },
-  statusLabel: { marginBottom: 8, fontWeight: '700' },
 });

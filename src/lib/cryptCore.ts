@@ -6,7 +6,7 @@ import RustCryptCore from '../../modules/rust-crypt-core';
  * The returned value is also base64 encoded so callers can safely persist or
  * transport the binary ciphertext through JavaScript strings.
  */
-export function encryptBase64(plaintextBase64: string, password: string): Promise<string> {
+export function encryptBase(plaintextBase64: string, password: string): Promise<string> {
   return RustCryptCore.encryptBase64(plaintextBase64, password);
 }
 
@@ -15,7 +15,7 @@ export function encryptBase64(plaintextBase64: string, password: string): Promis
  *
  * The returned value is a base64-encoded plaintext payload.
  */
-export function decryptBase64(ciphertextBase64: string, password: string): Promise<string> {
+export function decryptBase(ciphertextBase64: string, password: string): Promise<string> {
   return RustCryptCore.decryptBase64(ciphertextBase64, password);
 }
 

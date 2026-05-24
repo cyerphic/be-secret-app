@@ -18,7 +18,7 @@ export default memo(function MessageList({ refreshToken = 0, onMessageChanged, s
     if (!listRef.current) return;
 
     requestAnimationFrame(() => {
-      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+      listRef.current?.scrollToEnd({ animated: true });
     });
   }, [scrollToLatestTrigger]);
 
@@ -29,7 +29,6 @@ export default memo(function MessageList({ refreshToken = 0, onMessageChanged, s
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <MessageBubble message={item} onMessageChanged={onMessageChanged} />}
-        inverted={true}
         contentContainerStyle={styles.listContent}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"

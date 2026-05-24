@@ -16,6 +16,7 @@ export default memo(function IndexScreen() {
 
   const handleSendSuccess = useCallback(() => {
     setRefreshToken((prev) => prev + 1);
+    setScrollToLatestTrigger((prev) => prev + 1);
   }, []);
 
   const handleInputFocus = useCallback(() => {

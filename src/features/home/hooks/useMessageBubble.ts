@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import Clipboard from '@react-native-clipboard/clipboard';
 import type { ChatMessage } from '../types/messageEntity';
-import { decryptBase, encryptBase } from '../../../lib/cryptCore';
+import { decryptBase, encryptBase, encryptFile, decryptFile } from '../../../lib/cryptCore';
 import { deleteMessageById, updateMessagePayload } from '../queries/homeQueries';
 import { useSnackbar } from '../../../components/SnackBar';
 

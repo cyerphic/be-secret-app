@@ -1,31 +1,12 @@
 import { getDatabaseClient } from '../../../lib/db/sqlite';
-import type { DbMessageRow } from '../types/db';
+import type { DbMessageRow } from '../types/messageTable';
 
 export const insertMessage = async (payload: DbMessageRow): Promise<void> => {
   const db = getDatabaseClient();
-  
+
   await db.runAsync(
     'INSERT INTO messages (id, msg_type, created_at, encrypted_payload) VALUES (?, ?, ?, ?);',
     [payload.id, payload.msg_type, payload.created_at, payload.encrypted_payload]
-  );
-};
-
-export const ensureMessageSeed = async (): Promise<void> => {
-  const db = getDatabaseClient();
-
-  // simple sqlite test: insert one message only if table empty
-  const countResult = await db.getFirstAsync<{ total: number }>(
-    'SELECT COUNT(*) as total FROM messages;'
-  );
-
-  if ((countResult?.total ?? 0) > 0) {
-    return;
-  }
-
-  const now = Date.now();
-  await db.runAsync(
-    'INSERT INTO messages (id, msg_type, created_at, encrypted_payload) VALUES (?, ?, ?, ?);',
-    [`seed-${now}`, 0, now, 'SQLite test message: hello from local db.']
   );
 };
 

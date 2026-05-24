@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import useMessageBubble from '../hooks/useMessageBubble';
-import type { ChatMessage } from '../types/message';
+import type { ChatMessage } from '../types/messageEntity';
 
 type Props = {
   message: ChatMessage;
@@ -10,7 +10,7 @@ type Props = {
 
 export default memo(function MessageBubble({ message }: Props) {
   const { colors } = useTheme();
-  const { isMine } = useMessageBubble(message);
+  const { isMine } = useMessageBubble();
 
   return (
     <View style={[styles.row, isMine ? styles.rowMine : styles.rowOther]}>

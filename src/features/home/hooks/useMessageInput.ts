@@ -18,7 +18,6 @@ export default function useMessageInput() {
       await insertMessage(
         mapCreateMessagePayloadToDbRow({
           id: `msg-${now}`,
-          role: 'me',
           text: normalized,
           createdAt: now,
         })

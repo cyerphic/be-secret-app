@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import useMessageBubble from '../hooks/useMessageBubble';
-import type { ChatMessage } from '../hooks/useMessageList';
+import type { ChatMessage } from '../types/message';
 
 type Props = {
   message: ChatMessage;

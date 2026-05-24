@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { insertMessage } from '../queries/homeQueries';
+import { mapCreateMessagePayloadToDbRow } from '../mappers/messageMapper';
 
 export default function useMessageInput() {
   const [inputText, setInputText] = useState('');
@@ -14,12 +15,14 @@ export default function useMessageInput() {
 
     const now = Date.now();
     try {
-      await insertMessage({
-        id: `msg-${now}`,
-        msg_type: 1,
-        created_at: now,
-        encrypted_payload: normalized,
-      });
+      await insertMessage(
+        mapCreateMessagePayloadToDbRow({
+          id: `msg-${now}`,
+          role: 'me',
+          text: normalized,
+          createdAt: now,
+        })
+      );
       return true;
     } catch (error) {
       console.error('[useMessageInput] send fail:', error);

@@ -1,32 +1,33 @@
-import React, { memo, useState } from 'react';
-import { 
-  StyleSheet, 
-  ScrollView, 
-  View, 
-  TextInput 
-} from 'react-native';
-import { IconButton, useTheme } from 'react-native-paper';
-import { FlashList } from "@shopify/flash-list";
+import React, { memo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
 import InputContainer from '../components/MessageInput';
 import MessageList from '../components/MessageList';
+import { KeyboardAvoidingView, KeyboardProvider } from 'react-native-keyboard-controller';
 
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
-  const [inputText, setInputText] = useState('');
 
   return (
-    <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
-      {/* 顶部标题栏 */}
-      <Header style={{ backgroundColor: colors.surface }} header="private" />
-      
-      {/* message list */}
-      <MessageList />
+    <KeyboardProvider>
+      <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
+        {/* header */}
+        <Header style={{ backgroundColor: colors.surface }} header="private" />
+        
+        <KeyboardAvoidingView 
+          style={styles.contentContainer} 
+          behavior="padding"
+        >
+          <View style={styles.listWrapper}>
+            <MessageList />
+          </View>
 
-      {/* chat input */}
-      <InputContainer />
-
-    </View>
+          {/* 聊天输入框 */}
+          <InputContainer />
+        </KeyboardAvoidingView>
+      </View>
+    </KeyboardProvider>
   );
 });
 
@@ -34,32 +35,10 @@ const styles = StyleSheet.create({
   page: { 
     flex: 1,
   },
-  messageList: {
-    flex: 1, 
-  },
-  messageListContainer: { 
-    paddingVertical: 8, 
-    alignItems: 'center' 
-  },
-  chatContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    width: '100%',
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-end', 
-    borderRadius: 28,       
-    paddingHorizontal: 4,
-    paddingVertical: 4,
-  },
-  input: {
+  contentContainer: {
     flex: 1,
-    minHeight: 40,
-    maxHeight: 120, 
-    fontSize: 16,
-    paddingTop: 10,  
-    paddingBottom: 10,
-    paddingHorizontal: 8,
+  },
+  listWrapper: {
+    flex: 1,
   }
 });

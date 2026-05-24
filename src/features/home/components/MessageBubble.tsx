@@ -10,6 +10,8 @@ import {
 import { useTheme, Icon } from 'react-native-paper';
 
 import type { ChatMessage } from '../types/messageEntity';
+// 引入 useMessageBubble 实现 判断 如果 是 文本 执行 encryptBase, decryptBase
+// 引入 homeQueries 新增 一个delete 方法 给 Alert.alert( 点击 onPress delete 是 使用 删除
 
 type Props = {
   message: ChatMessage;
@@ -32,7 +34,7 @@ export default memo(function MessageBubble({ message }: Props) {
             console.log('delete');
           },
         },
-        
+
         {
           text: '加密',
           onPress: () => {

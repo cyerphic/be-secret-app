@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { ChatMessage } from './useMessageList';
+import type { ChatMessage } from '../types/message';
 
 export default function useMessageBubble(message: ChatMessage) {
   const isMine = useMemo(() => message.role === 'me', [message.role]);

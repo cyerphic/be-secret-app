@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
 import InputContainer from '../components/MessageInput';
@@ -9,6 +10,7 @@ import { KeyboardStickyView } from 'react-native-keyboard-controller';
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
   const [refreshToken, setRefreshToken] = useState(0);
+  const tabBarHeight = useBottomTabBarHeight();
 
   const handleSendSuccess = useCallback(() => {
     setRefreshToken((prev) => prev + 1);
@@ -25,7 +27,7 @@ export default memo(function IndexScreen() {
         </View>
 
         {/* 聊天输入框 */}
-        <KeyboardStickyView offset={{ closed: 0, opened: 0 }}>
+        <KeyboardStickyView offset={{ closed: 0, opened: tabBarHeight }}>
           <InputContainer onSendSuccess={handleSendSuccess} />
         </KeyboardStickyView>
       </View>

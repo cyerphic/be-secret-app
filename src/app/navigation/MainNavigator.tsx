@@ -53,6 +53,7 @@ function TabNavigator() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: false,
+        //tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.onSurfaceVariant,
         tabBarIcon: ({ focused, color }) => renderTabBarIcon(route, focused, color),

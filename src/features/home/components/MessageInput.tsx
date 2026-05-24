@@ -29,7 +29,7 @@ export default memo(function InputContainer({ onSendSuccess }: InputContainerPro
         {/* 中间：多行文本输入框 */}
         <TextInput
           style={[styles.input, { color: colors.onSurface }]}
-          placeholder="Message Gemini..."
+          placeholder="Message Input..."
           placeholderTextColor={colors.onSurfaceVariant}
           multiline={true}
           //numberOfLines={1}

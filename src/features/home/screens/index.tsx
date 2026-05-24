@@ -10,11 +10,16 @@ import { useKeyboardAnimation } from 'react-native-keyboard-controller';
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
   const [refreshToken, setRefreshToken] = useState(0);
+  const [scrollToLatestTrigger, setScrollToLatestTrigger] = useState(0);
   const tabBarHeight = useBottomTabBarHeight();
   const { height, progress } = useKeyboardAnimation();
 
   const handleSendSuccess = useCallback(() => {
     setRefreshToken((prev) => prev + 1);
+  }, []);
+
+  const handleInputFocus = useCallback(() => {
+    setScrollToLatestTrigger((prev) => prev + 1);
   }, []);
 
   const stickyTranslateY = useMemo(() => {
@@ -34,11 +39,15 @@ export default memo(function IndexScreen() {
 
       <Animated.View style={[styles.contentContainer, { transform: [{ translateY: stickyTranslateY }] }]}>
         <View style={styles.listWrapper}>
-          <MessageList refreshToken={refreshToken} onMessageChanged={handleSendSuccess} />
+          <MessageList
+            refreshToken={refreshToken}
+            onMessageChanged={handleSendSuccess}
+            scrollToLatestTrigger={scrollToLatestTrigger}
+          />
         </View>
 
         {/* 聊天输入框 */}
-        <InputContainer onSendSuccess={handleSendSuccess} />
+        <InputContainer onSendSuccess={handleSendSuccess} onInputFocus={handleInputFocus} />
       </Animated.View>
     </View>
   );

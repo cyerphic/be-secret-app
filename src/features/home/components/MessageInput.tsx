@@ -9,9 +9,10 @@ import useMessageInput from '../hooks/useMessageInput';
 
 type InputContainerProps = {
   onSendSuccess?: () => void;
+  onInputFocus?: () => void;
 };
 
-export default memo(function InputContainer({ onSendSuccess }: InputContainerProps) {
+export default memo(function InputContainer({ onSendSuccess, onInputFocus }: InputContainerProps) {
   const { colors } = useTheme();
   const { inputText, setInputText, send } = useMessageInput();
 
@@ -36,6 +37,7 @@ export default memo(function InputContainer({ onSendSuccess }: InputContainerPro
           //scrollEnabled={false}
           value={inputText}
           onChangeText={setInputText}
+          onFocus={onInputFocus}
         />
 
         {/* 右侧：发送 / 麦克风 按钮 */}

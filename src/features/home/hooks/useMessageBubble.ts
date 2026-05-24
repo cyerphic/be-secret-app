@@ -14,6 +14,14 @@ const fromBase64 = (value: string): string => {
 };
 
 export default function useMessageBubble(onChanged?: () => void) {
+  const copyText = useCallback(async (text: string): Promise<boolean> => {
+    const clipboardApi = globalThis.navigator?.clipboard;
+    if (!clipboardApi?.writeText) return false;
+
+    await clipboardApi.writeText(text);
+    return true;
+  }, []);
+
   const remove = useCallback(
     async (message: ChatMessage): Promise<void> => {
       await deleteMessageById(message.id);
@@ -43,6 +51,7 @@ export default function useMessageBubble(onChanged?: () => void) {
   );
 
   return {
+    copyText,
     remove,
     encryptText,
     decryptText,

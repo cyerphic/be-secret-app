@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 
 import { useTheme, Icon } from 'react-native-paper';
@@ -13,11 +13,21 @@ type Props = {
 
 export default memo(function MessageBubble({ message, onMessageChanged }: Props) {
   const { colors } = useTheme();
-  const { remove, encryptText, decryptText } = useMessageBubble(onMessageChanged);
+  const { copyText, remove, encryptText, decryptText } = useMessageBubble(onMessageChanged);
 
   const actionColor = colors.onSurfaceVariant;
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) {
+        clearTimeout(copiedTimerRef.current);
+      }
+    };
+  }, []);
 
   const runWithLoading = async (task: () => Promise<void>, errorLabel: string) => {
     if (isProcessing) return;
@@ -70,6 +80,23 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
     );
   };
 
+  const onCopy = async () => {
+    if (isProcessing) return;
+
+    try {
+      const copied = await copyText(message.text);
+      if (!copied) return;
+
+      setIsCopied(true);
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => {
+        setIsCopied(false);
+      }, 1400);
+    } catch (error) {
+      console.error('[MessageBubble] copy fail:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.bubbleRow}>
@@ -103,8 +130,8 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => console.log('copy')}>
-          <Icon source="content-copy" size={22} color={actionColor} />
+        <TouchableOpacity onPress={() => void onCopy()} disabled={isProcessing}>
+          <Icon source={isCopied ? 'check' : 'content-copy'} size={22} color={actionColor} />
         </TouchableOpacity>
 
         <Text

@@ -1,11 +1,5 @@
 import { getDatabaseClient } from '../../../lib/db/sqlite';
-
-export type DbMessageRow = {
-  id: string;
-  msg_type: number;
-  created_at: number;
-  encrypted_payload: string;
-};
+import type { DbMessageRow } from './types/db';
 
 export const ensureHomeMessageSeed = async (): Promise<void> => {
   const db = getDatabaseClient();

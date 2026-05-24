@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
 import InputContainer from '../components/MessageInput';
 import MessageList from '../components/MessageList';
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
@@ -14,17 +14,16 @@ export default memo(function IndexScreen() {
       {/* header */}
       <Header style={{ backgroundColor: colors.surface }} header="private" />
 
-      <KeyboardAvoidingView
-        style={styles.contentContainer}
-        behavior="translate-with-padding"
-      >
+      <View style={styles.contentContainer}>
         <View style={styles.listWrapper}>
           <MessageList />
         </View>
 
         {/* 聊天输入框 */}
-        <InputContainer />
-      </KeyboardAvoidingView>
+        <KeyboardStickyView offset={{ closed: 0, opened: 99 }}>
+          <InputContainer />
+        </KeyboardStickyView>
+      </View>
     </View>
   );
 });

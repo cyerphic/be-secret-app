@@ -5,6 +5,7 @@ import {
   TextInput 
 } from 'react-native';
 import { IconButton, useTheme } from 'react-native-paper';
+import {} from useMessageInput
 
 export default memo(function InputContainer() {
   const { colors } = useTheme();
@@ -27,8 +28,8 @@ export default memo(function InputContainer() {
           placeholder="Message Gemini..."
           placeholderTextColor={colors.onSurfaceVariant}
           multiline={true}
-          numberOfLines={1}
-          scrollEnabled={false}
+          //numberOfLines={1}
+          //scrollEnabled={false}
           value={inputText}
           onChangeText={setInputText}
         />
@@ -67,11 +68,11 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    minHeight: 40,
+    minHeight: 46,
     maxHeight: 120, 
     fontSize: 16,
-    paddingTop: 10,  
-    paddingBottom: 10,
+    paddingTop: 13,  
+    paddingBottom: 13,
     paddingHorizontal: 8,
   }
 });

@@ -25,7 +25,7 @@ export default memo(function IndexScreen() {
         </View>
 
         {/* 聊天输入框 */}
-        <KeyboardStickyView offset={{ closed: 0, opened: 99 }}>
+        <KeyboardStickyView offset={{ closed: 0, opened: 0 }}>
           <InputContainer onSendSuccess={handleSendSuccess} />
         </KeyboardStickyView>
       </View>

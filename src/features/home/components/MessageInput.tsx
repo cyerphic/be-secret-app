@@ -9,14 +9,18 @@ import useMessageInput from '../hooks/useMessageInput';
 
 type InputContainerProps = {
   onSendSuccess?: () => void;
+  onLayoutHeightChange?: (height: number) => void;
 };
 
-export default memo(function InputContainer({ onSendSuccess }: InputContainerProps) {
+export default memo(function InputContainer({ onSendSuccess, onLayoutHeightChange }: InputContainerProps) {
   const { colors } = useTheme();
   const { inputText, setInputText, send } = useMessageInput();
 
   return (
-    <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
+    <View
+      style={[styles.inputContainer, { backgroundColor: colors.background }]}
+      onLayout={(event) => onLayoutHeightChange?.(event.nativeEvent.layout.height)}
+    > 
       <View style={[styles.inputWrapper, { backgroundColor: colors.surface }]}>
         {/* 左侧：功能按钮 */}
         <IconButton

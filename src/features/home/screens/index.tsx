@@ -1,15 +1,15 @@
 import React, { memo, useCallback, useState } from 'react';
-import { StyleSheet, View, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
 import InputContainer from '../components/MessageInput';
 import MessageList from '../components/MessageList';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
   const [refreshToken, setRefreshToken] = useState(0);
+  const [inputHeight, setInputHeight] = useState(70);
   const tabBarHeight = useBottomTabBarHeight();
 
   const handleSendSuccess = useCallback(() => {
@@ -21,16 +21,24 @@ export default memo(function IndexScreen() {
       {/* header */}
       <Header style={{ backgroundColor: colors.surface }} header="private" />
 
-      <View style={styles.contentContainer}>
+      <KeyboardAvoidingView
+        style={styles.contentContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={tabBarHeight}
+      >
         <View style={styles.listWrapper}>
-          <MessageList refreshToken={refreshToken} onMessageChanged={handleSendSuccess} />
+          <MessageList
+            refreshToken={refreshToken}
+            onMessageChanged={handleSendSuccess}
+            bottomInset={inputHeight}
+          />
         </View>
 
-        {/* 聊天输入框 */}
-        <KeyboardStickyView offset={{ closed: 0, opened: tabBarHeight }}>
-          <InputContainer onSendSuccess={handleSendSuccess} />
-        </KeyboardStickyView>
-      </View>
+        <InputContainer
+          onSendSuccess={handleSendSuccess}
+          onLayoutHeightChange={setInputHeight}
+        />
+      </KeyboardAvoidingView>
     </View>
   );
 });

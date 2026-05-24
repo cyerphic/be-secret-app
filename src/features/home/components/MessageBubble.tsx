@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import React, { memo, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 
 import { useTheme, Icon } from 'react-native-paper';
 
@@ -17,6 +17,21 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
 
   const actionColor = colors.onSurfaceVariant;
 
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const runWithLoading = async (task: () => Promise<void>, errorLabel: string) => {
+    if (isProcessing) return;
+
+    setIsProcessing(true);
+    try {
+      await task();
+    } catch (error) {
+      console.error(`[MessageBubble] ${errorLabel} fail:`, error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const openActions = () => {
     Alert.alert(
       '消息操作',
@@ -26,27 +41,21 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
           text: '删除',
           style: 'destructive',
           onPress: () => {
-            remove(message).catch((error) => {
-              console.error('[MessageBubble] delete fail:', error);
-            });
+            void runWithLoading(() => remove(message), 'delete');
           },
         },
 
         {
           text: '加密',
           onPress: () => {
-            encryptText(message).catch((error) => {
-              console.error('[MessageBubble] encrypt fail:', error);
-            });
+            void runWithLoading(() => encryptText(message), 'encrypt');
           },
         },
 
         {
           text: '解密',
           onPress: () => {
-            decryptText(message).catch((error) => {
-              console.error('[MessageBubble] decrypt fail:', error);
-            });
+            void runWithLoading(() => decryptText(message), 'decrypt');
           },
         },
 
@@ -64,6 +73,10 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
   return (
     <View style={styles.container}>
       <View style={styles.bubbleRow}>
+        <View style={styles.leftIndicatorSlot}>
+          {isProcessing ? <ActivityIndicator size="small" color={actionColor} /> : null}
+        </View>
+
         <View
           style={[
             styles.bubble,
@@ -84,7 +97,7 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.menuButton} activeOpacity={0.7} onPress={openActions}>
+        <TouchableOpacity style={styles.menuButton} activeOpacity={0.7} onPress={openActions} disabled={isProcessing}>
           <Icon source="dots-vertical" size={20} color={actionColor} />
         </TouchableOpacity>
       </View>
@@ -119,6 +132,18 @@ const styles = StyleSheet.create({
   bubbleRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+
+  leftIndicatorSlot: {
+    width: 28,
+    height: 28,
+
+    marginRight: 4,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    flexShrink: 0,
   },
 
   bubble: {

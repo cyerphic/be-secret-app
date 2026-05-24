@@ -1,5 +1,19 @@
 import { getDatabaseClient } from '../../../lib/db/sqlite';
-import type { DbMessageRow } from './types/db';
+import type { DbMessageRow } from '../types/db';
+
+export const insertHomeMessage = async (payload: {
+  id: string;
+  msgType: number;
+  createdAt: number;
+  encryptedPayload: string;
+}): Promise<void> => {
+  const db = getDatabaseClient();
+
+  await db.runAsync(
+    'INSERT INTO messages (id, msg_type, created_at, encrypted_payload) VALUES (?, ?, ?, ?);',
+    [payload.id, payload.msgType, payload.createdAt, payload.encryptedPayload]
+  );
+};
 
 export const ensureHomeMessageSeed = async (): Promise<void> => {
   const db = getDatabaseClient();

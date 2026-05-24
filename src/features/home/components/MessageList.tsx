@@ -4,8 +4,12 @@ import { FlashList } from '@shopify/flash-list';
 import MessageBubble from './MessageBubble';
 import useMessageList from '../hooks/useMessageList';
 
-export default memo(function MessageList() {
-  const { messages } = useMessageList();
+type MessageListProps = {
+  refreshToken?: number;
+};
+
+export default memo(function MessageList({ refreshToken = 0 }: MessageListProps) {
+  const { messages } = useMessageList(refreshToken);
 
   return (
     <View style={styles.container}>

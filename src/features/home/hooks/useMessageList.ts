@@ -18,7 +18,7 @@ const formatTime = (timestampMs: number): string => {
   });
 };
 
-export default function useMessageList() {
+export default function useMessageList(refreshToken: number = 0) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function useMessageList() {
     boot().catch((error) => {
       console.error('[useMessageList] load messages fail:', error);
     });
-  }, []);
+  }, [refreshToken]);
 
   const stableMessages = useMemo(() => messages, [messages]);
 

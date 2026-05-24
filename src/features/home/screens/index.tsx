@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { StyleSheet, View, Platform } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
@@ -8,6 +8,11 @@ import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
+  const [refreshToken, setRefreshToken] = useState(0);
+
+  const handleSendSuccess = useCallback(() => {
+    setRefreshToken((prev) => prev + 1);
+  }, []);
 
   return (
     <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
@@ -16,12 +21,12 @@ export default memo(function IndexScreen() {
 
       <View style={styles.contentContainer}>
         <View style={styles.listWrapper}>
-          <MessageList />
+          <MessageList refreshToken={refreshToken} />
         </View>
 
         {/* 聊天输入框 */}
         <KeyboardStickyView offset={{ closed: 0, opened: 99 }}>
-          <InputContainer />
+          <InputContainer onSendSuccess={handleSendSuccess} />
         </KeyboardStickyView>
       </View>
     </View>

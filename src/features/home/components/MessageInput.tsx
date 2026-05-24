@@ -1,15 +1,19 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { 
   StyleSheet, 
   View, 
   TextInput 
 } from 'react-native';
 import { IconButton, useTheme } from 'react-native-paper';
-import {} from useMessageInput
+import useMessageInput from '../hooks/useMessageInput';
 
-export default memo(function InputContainer() {
+type InputContainerProps = {
+  onSendSuccess?: () => void;
+};
+
+export default memo(function InputContainer({ onSendSuccess }: InputContainerProps) {
   const { colors } = useTheme();
-  const [inputText, setInputText] = useState('');
+  const { inputText, setInputText, send } = useMessageInput();
 
   return (
     <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
@@ -39,10 +43,13 @@ export default memo(function InputContainer() {
           icon={inputText.trim().length > 0 ? "send" : "microphone"}
           size={28}
           iconColor={inputText.trim().length > 0 ? colors.primary : colors.onSurfaceVariant}
-          onPress={() => {
+          onPress={async () => {
             if (inputText.trim().length > 0) {
               console.log('发送消息:', inputText);
-              setInputText(''); 
+              const sent = await send();
+              if (sent) {
+                onSendSuccess?.();
+              }
             } else {
               console.log('开始语音输入...');
             }

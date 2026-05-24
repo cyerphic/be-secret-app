@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import Clipboard from '@react-native-clipboard/clipboard';
 import type { ChatMessage } from '../types/messageEntity';
 import { decryptBase, encryptBase } from '../../../lib/cryptCore';
 import { deleteMessageById, updateMessagePayload } from '../queries/homeQueries';
@@ -15,10 +16,7 @@ const fromBase64 = (value: string): string => {
 
 export default function useMessageBubble(onChanged?: () => void) {
   const copyText = useCallback(async (text: string): Promise<boolean> => {
-    const clipboardApi = globalThis.navigator?.clipboard;
-    if (!clipboardApi?.writeText) return false;
-
-    await clipboardApi.writeText(text);
+    Clipboard.setString(text);
     return true;
   }, []);
 

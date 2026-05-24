@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { initDatabaseInfrastructure } from '../../../lib/db/sqlite';
-import { ensureHomeMessageSeed, listHomeMessages } from '../queries/homeQueries';
+import { ensureMessageSeed, listMessages } from '../queries/homeQueries';
 
 export type MessageRole = 'me' | 'assistant';
 
@@ -24,8 +24,8 @@ export default function useMessageList(refreshToken: number = 0) {
   useEffect(() => {
     const boot = async () => {
       await initDatabaseInfrastructure();
-      await ensureHomeMessageSeed();
-      const rows = await listHomeMessages();
+      await ensureMessageSeed();
+      const rows = await listMessages();
 
       const normalized = rows.map((row) => ({
         id: row.id,

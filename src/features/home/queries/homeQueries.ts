@@ -1,21 +1,16 @@
 import { getDatabaseClient } from '../../../lib/db/sqlite';
 import type { DbMessageRow } from '../types/db';
 
-export const insertHomeMessage = async (payload: {
-  id: string;
-  msgType: number;
-  createdAt: number;
-  encryptedPayload: string;
-}): Promise<void> => {
+export const insertMessage = async (payload: DbMessageRow): Promise<void> => {
   const db = getDatabaseClient();
-
+  
   await db.runAsync(
     'INSERT INTO messages (id, msg_type, created_at, encrypted_payload) VALUES (?, ?, ?, ?);',
-    [payload.id, payload.msgType, payload.createdAt, payload.encryptedPayload]
+    [payload.id, payload.msg_type, payload.created_at, payload.encrypted_payload]
   );
 };
 
-export const ensureHomeMessageSeed = async (): Promise<void> => {
+export const ensureMessageSeed = async (): Promise<void> => {
   const db = getDatabaseClient();
 
   // simple sqlite test: insert one message only if table empty
@@ -34,7 +29,7 @@ export const ensureHomeMessageSeed = async (): Promise<void> => {
   );
 };
 
-export const listHomeMessages = async (): Promise<DbMessageRow[]> => {
+export const listMessages = async (): Promise<DbMessageRow[]> => {
   const db = getDatabaseClient();
 
   const rows = await db.getAllAsync<DbMessageRow>(

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { insertHomeMessage } from '../queries/homeQueries';
+import { insertMessage } from '../queries/homeQueries';
 
 export default function useMessageInput() {
   const [inputText, setInputText] = useState('');
@@ -14,11 +14,11 @@ export default function useMessageInput() {
 
     const now = Date.now();
     try {
-      await insertHomeMessage({
+      await insertMessage({
         id: `msg-${now}`,
-        msgType: 1,
-        createdAt: now,
-        encryptedPayload: normalized,
+        msg_type: 1,
+        created_at: now,
+        encrypted_payload: normalized,
       });
       return true;
     } catch (error) {

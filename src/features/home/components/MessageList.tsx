@@ -18,8 +18,11 @@ export default memo(function MessageList({ refreshToken = 0, onMessageChanged }:
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <MessageBubble message={item} onMessageChanged={onMessageChanged} />}
+        inverted={true}
         contentContainerStyle={styles.listContent}
         keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        estimatedItemSize={80}
         removeClippedSubviews
         showsVerticalScrollIndicator={false}
       />

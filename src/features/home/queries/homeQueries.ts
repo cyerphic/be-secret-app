@@ -19,3 +19,15 @@ export const listMessages = async (): Promise<DbMessageRow[]> => {
 
   return rows;
 };
+
+export const updateMessagePayload = async (id: string, payload: string): Promise<void> => {
+  const db = getDatabaseClient();
+
+  await db.runAsync('UPDATE messages SET encrypted_payload = ? WHERE id = ?;', [payload, id]);
+};
+
+export const deleteMessageById = async (id: string): Promise<void> => {
+  const db = getDatabaseClient();
+
+  await db.runAsync('DELETE FROM messages WHERE id = ?;', [id]);
+};

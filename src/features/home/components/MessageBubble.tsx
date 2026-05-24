@@ -1,24 +1,19 @@
 import React, { memo } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 
 import { useTheme, Icon } from 'react-native-paper';
 
 import type { ChatMessage } from '../types/messageEntity';
-// 引入 useMessageBubble 实现 判断 如果 是 文本 执行 encryptBase, decryptBase
-// 引入 homeQueries 新增 一个delete 方法 给 Alert.alert( 点击 onPress delete 是 使用 删除
+import useMessageBubble from '../hooks/useMessageBubble';
 
 type Props = {
   message: ChatMessage;
+  onMessageChanged?: () => void;
 };
 
-export default memo(function MessageBubble({ message }: Props) {
+export default memo(function MessageBubble({ message, onMessageChanged }: Props) {
   const { colors } = useTheme();
+  const { remove, encryptText, decryptText } = useMessageBubble(onMessageChanged);
 
   const actionColor = colors.onSurfaceVariant;
 
@@ -31,21 +26,27 @@ export default memo(function MessageBubble({ message }: Props) {
           text: '删除',
           style: 'destructive',
           onPress: () => {
-            console.log('delete');
+            remove(message).catch((error) => {
+              console.error('[MessageBubble] delete fail:', error);
+            });
           },
         },
 
         {
           text: '加密',
           onPress: () => {
-            console.log('encrypt');
+            encryptText(message).catch((error) => {
+              console.error('[MessageBubble] encrypt fail:', error);
+            });
           },
         },
 
         {
           text: '解密',
           onPress: () => {
-            console.log('decrypt');
+            decryptText(message).catch((error) => {
+              console.error('[MessageBubble] decrypt fail:', error);
+            });
           },
         },
 
@@ -62,8 +63,6 @@ export default memo(function MessageBubble({ message }: Props) {
 
   return (
     <View style={styles.container}>
-      
-      {/* 气泡 */}
       <View style={styles.bubbleRow}>
         <View
           style={[
@@ -85,28 +84,14 @@ export default memo(function MessageBubble({ message }: Props) {
           </Text>
         </View>
 
-        {/* 三点 */}
-        <TouchableOpacity
-          style={styles.menuButton}
-          activeOpacity={0.7}
-          onPress={openActions}
-        >
-          <Icon
-            source="dots-vertical"
-            size={20}
-            color={actionColor}
-          />
+        <TouchableOpacity style={styles.menuButton} activeOpacity={0.7} onPress={openActions}>
+          <Icon source="dots-vertical" size={20} color={actionColor} />
         </TouchableOpacity>
       </View>
 
-      {/* footer */}
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => console.log('copy')}>
-          <Icon
-            source="content-copy"
-            size={22}
-            color={actionColor}
-          />
+          <Icon source="content-copy" size={22} color={actionColor} />
         </TouchableOpacity>
 
         <Text

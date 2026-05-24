@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
-import { StyleSheet, View, Platform } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
 import InputContainer from '../components/MessageInput';
@@ -21,7 +21,7 @@ export default memo(function IndexScreen() {
 
       <View style={styles.contentContainer}>
         <View style={styles.listWrapper}>
-          <MessageList refreshToken={refreshToken} />
+          <MessageList refreshToken={refreshToken} onMessageChanged={handleSendSuccess} />
         </View>
 
         {/* 聊天输入框 */}

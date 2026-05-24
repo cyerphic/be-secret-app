@@ -6,9 +6,10 @@ import useMessageList from '../hooks/useMessageList';
 
 type MessageListProps = {
   refreshToken?: number;
+  onMessageChanged?: () => void;
 };
 
-export default memo(function MessageList({ refreshToken = 0 }: MessageListProps) {
+export default memo(function MessageList({ refreshToken = 0, onMessageChanged }: MessageListProps) {
   const { messages } = useMessageList(refreshToken);
 
   return (
@@ -16,7 +17,7 @@ export default memo(function MessageList({ refreshToken = 0 }: MessageListProps)
       <FlashList
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <MessageBubble message={item} />}
+        renderItem={({ item }) => <MessageBubble message={item} onMessageChanged={onMessageChanged} />}
         contentContainerStyle={styles.listContent}
         keyboardDismissMode="on-drag"
         removeClippedSubviews

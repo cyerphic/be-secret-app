@@ -14,6 +14,9 @@ export default memo(function MessageList() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <MessageBubble message={item} />}
         contentContainerStyle={styles.listContent}
+        keyboardDismissMode="on-drag"
+        removeClippedSubviews
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );

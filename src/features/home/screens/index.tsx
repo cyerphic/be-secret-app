@@ -4,30 +4,28 @@ import { useTheme } from 'react-native-paper';
 import Header from '../../../components/Header';
 import InputContainer from '../components/MessageInput';
 import MessageList from '../components/MessageList';
-import { KeyboardAvoidingView, KeyboardProvider } from 'react-native-keyboard-controller';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
 
   return (
-    <KeyboardProvider>
-      <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
-        {/* header */}
-        <Header style={{ backgroundColor: colors.surface }} header="private" />
-        
-        <KeyboardAvoidingView 
-          style={styles.contentContainer} 
-          behavior="padding"
-        >
-          <View style={styles.listWrapper}>
-            <MessageList />
-          </View>
+    <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
+      {/* header */}
+      <Header style={{ backgroundColor: colors.surface }} header="private" />
 
-          {/* 聊天输入框 */}
-          <InputContainer />
-        </KeyboardAvoidingView>
-      </View>
-    </KeyboardProvider>
+      <KeyboardAvoidingView
+        style={styles.contentContainer}
+        behavior="translate-with-padding"
+      >
+        <View style={styles.listWrapper}>
+          <MessageList />
+        </View>
+
+        {/* 聊天输入框 */}
+        <InputContainer />
+      </KeyboardAvoidingView>
+    </View>
   );
 });
 

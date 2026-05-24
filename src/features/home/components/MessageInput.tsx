@@ -27,6 +27,8 @@ export default memo(function InputContainer() {
           placeholder="Message Gemini..."
           placeholderTextColor={colors.onSurfaceVariant}
           multiline={true}
+          numberOfLines={1}
+          scrollEnabled={false}
           value={inputText}
           onChangeText={setInputText}
         />

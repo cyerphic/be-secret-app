@@ -7,6 +7,7 @@ import { useSnackbar } from '../../../components/SnackBar';
 
 export default function useMessageInput() {
   const [inputText, setInputText] = useState('');
+  const [messageType, setMessageType] = useState<'text' | 'file'>('text');
   const { show } = useSnackbar();
 
   const send = useCallback(async (): Promise<boolean> => {
@@ -14,6 +15,8 @@ export default function useMessageInput() {
     if (!normalized) {
       return false;
     }
+
+    const currentType = messageType;
 
     setInputText('');
 
@@ -24,6 +27,7 @@ export default function useMessageInput() {
           id: `msg-${now}`,
           text: normalized,
           createdAt: now,
+          type: currentType,
         })
       );
       return true;
@@ -43,6 +47,7 @@ export default function useMessageInput() {
       const rustPath = sourceUri.replace('file://', '');
 
       setInputText(rustPath);
+      setMessageType('file');
     } catch (error) {
       show('encryptFilePath', 'error');
     }
@@ -53,5 +58,6 @@ export default function useMessageInput() {
     setInputText,
     send,
     encryptFilePath,
+    messageType,
   };
 }

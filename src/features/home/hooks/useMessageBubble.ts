@@ -31,12 +31,21 @@ export default function useMessageBubble(onChanged?: () => void) {
     [onChanged]
   );
 
-  const encryptText = useCallback(
+  const encryptMessage = useCallback(
     async (message: ChatMessage): Promise<void> => {
       try {
-        const plaintextBase64 = toBase64(message.text);
-        const encrypted = await encryptBase(plaintextBase64, CRYPT_PASSWORD);
-        await updateMessagePayload(message.id, encrypted);
+        if (message.type === 'text') {
+          const plaintextBase64 = toBase64(message.text);
+          const encrypted = await encryptBase(plaintextBase64, CRYPT_PASSWORD);
+          await updateMessagePayload(message.id, encrypted);
+        } else if (message.type === 'file') {
+          //
+          const rustInPath = message.text;
+          const rustOutPath = `${rustInPath}.enc`;
+          await encryptFile(rustInPath, rustOutPath, CRYPT_PASSWORD);
+          await updateMessagePayload(message.id, rustOutPath);
+          // FileSystem.deleteAsync('file://' + rustInPath).catch(()=>{});
+        }
         onChanged?.();
       } catch (error) { 
         show('encrypt error', 'error');
@@ -45,12 +54,22 @@ export default function useMessageBubble(onChanged?: () => void) {
     [onChanged]
   );
 
-  const decryptText = useCallback(
+  const decryptMessage = useCallback(
     async (message: ChatMessage): Promise<void> => {
       try {
-        const decryptedBase64 = await decryptBase(message.text, CRYPT_PASSWORD);
-        const plaintext = fromBase64(decryptedBase64);
-        await updateMessagePayload(message.id, plaintext);
+        if (message.type === 'text') {
+          const decryptedBase64 = await decryptBase(message.text, CRYPT_PASSWORD);
+          const plaintext = fromBase64(decryptedBase64);
+          await updateMessagePayload(message.id, plaintext);
+        } else if (message.type === 'file') {
+          //
+          const rustInPath = message.text;
+          const rustOutPath = rustInPath.endsWith('.enc')
+            ? rustInPath.replace(/\.enc$/, '')
+            : `${rustInPath}`;
+          await decryptFile(rustInPath, rustOutPath, CRYPT_PASSWORD);
+          await updateMessagePayload(message.id, rustOutPath);
+        }
         onChanged?.();
       } catch (error) {
         show('decrypt error', 'error');
@@ -62,7 +81,7 @@ export default function useMessageBubble(onChanged?: () => void) {
   return {
     copyText,
     remove,
-    encryptText,
-    decryptText,
+    encryptMessage,
+    decryptMessage,
   };
 }

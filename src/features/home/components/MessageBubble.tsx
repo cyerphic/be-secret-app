@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-
 import { useTheme, Icon } from 'react-native-paper';
+import * as Sharing from 'expo-sharing';
 
 import type { ChatMessage } from '../types/messageEntity';
 import useMessageBubble from '../hooks/useMessageBubble';
@@ -13,7 +13,7 @@ type Props = {
 
 export default memo(function MessageBubble({ message, onMessageChanged }: Props) {
   const { colors } = useTheme();
-  const { copyText, remove, encryptText, decryptText } = useMessageBubble(onMessageChanged);
+  const { copyText, remove, encryptMessage, decryptMessage } = useMessageBubble(onMessageChanged);
 
   const actionColor = colors.onSurfaceVariant;
 
@@ -58,14 +58,14 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
         {
           text: '加密',
           onPress: () => {
-            void runWithLoading(() => encryptText(message), 'encrypt');
+            void runWithLoading(() => encryptMessage(message), 'encrypt');
           },
         },
 
         {
           text: '解密',
           onPress: () => {
-            void runWithLoading(() => decryptText(message), 'decrypt');
+            void runWithLoading(() => decryptMessage(message), 'decrypt');
           },
         },
 
@@ -94,6 +94,22 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
       }, 1400);
     } catch (error) {
       console.error('[MessageBubble] copy fail:', error);
+    }
+  };
+
+  const onShare = async () => {
+    if (isProcessing) return;
+    
+    try {
+      const canShare = await Sharing.isAvailableAsync();
+      if (canShare) {
+        const shareUrl = message.text.startsWith('file://') 
+          ? message.text 
+          : `file://${message.text}`;
+        await Sharing.shareAsync(shareUrl); // file path
+      }
+    } catch (error) {
+      console.error('[MessageBubble] share fail:', error);
     }
   };
 
@@ -130,8 +146,21 @@ export default memo(function MessageBubble({ message, onMessageChanged }: Props)
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => void onCopy()} disabled={isProcessing}>
-          <Icon source={isCopied ? 'check' : 'content-copy'} size={22} color={actionColor} />
+        <TouchableOpacity 
+          onPress={() => {
+            if (message.type === 'file') {
+              void onShare();
+            } else {
+              void onCopy();
+            }
+          }} 
+          disabled={isProcessing}
+        >
+          {message.type === 'file' ? (
+            <Icon source="share-outline" size={22} color={actionColor} />
+          ) : (
+            <Icon source={isCopied ? 'check' : 'content-copy'} size={22} color={actionColor} />
+          )}
         </TouchableOpacity>
 
         <Text

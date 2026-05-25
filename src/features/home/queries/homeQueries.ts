@@ -31,3 +31,9 @@ export const deleteMessageById = async (id: string): Promise<void> => {
 
   await db.runAsync('DELETE FROM messages WHERE id = ?;', [id]);
 };
+
+//export const getMessageTypeById = async (id: string): Promise<void> => {
+//  const db = getDatabaseClient();
+
+//  await db.runAsync('SELECT msg_type FROM messages WHERE id = ?;', [id]);
+//};

@@ -34,12 +34,7 @@ export default function useMessageInput() {
     }
   }, [inputText]);
 
-  //const attachFile 注意 使用 Encrypt.tsx 里的 路径写法 和 引用 库 ，因为 这是验证 过得
-  //我们 现在的功能 是 把 保存 可以直接传给 encryptFile 进行加密解密的路径 
-  //如果是 文件类型 也就是不是 text ，MessageBubble.tsx footer 应该是 share icon 不是 copy
-  //useMessageBubble 新增 encryptFile, decryptFile
-
-  const encryptFilePath = useCallback(async (): Promise<void> => {
+  const encryptFilePath = async () => {
     try {
       const res = await DocumentPicker.getDocumentAsync({});
       if (res.canceled || !res.assets || res.assets.length === 0) return;
@@ -51,7 +46,7 @@ export default function useMessageInput() {
     } catch (error) {
       show('encryptFilePath', 'error');
     }
-  });
+  };
 
   return {
     inputText,

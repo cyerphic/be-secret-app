@@ -14,7 +14,7 @@ type InputContainerProps = {
 
 export default memo(function InputContainer({ onSendSuccess, onInputFocus }: InputContainerProps) {
   const { colors } = useTheme();
-  const { inputText, setInputText, send, attachFile } = useMessageInput();
+  const { inputText, setInputText, send, encryptFilePath } = useMessageInput();
 
   return (
     <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
@@ -24,7 +24,7 @@ export default memo(function InputContainer({ onSendSuccess, onInputFocus }: Inp
           icon="plus" 
           size={28}
           iconColor={colors.onSurfaceVariant}
-          onPress={attachFile}
+          onPress={encryptFilePath}
         />
 
         {/* 中间：多行文本输入框 */}

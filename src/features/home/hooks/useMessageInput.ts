@@ -1,4 +1,6 @@
 import { useCallback, useState } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system/legacy';
 import { insertMessage } from '../queries/homeQueries';
 import { mapCreateMessagePayloadToDbRow } from '../mappers/messageMapper';
 import { useSnackbar } from '../../../components/SnackBar';
@@ -37,10 +39,24 @@ export default function useMessageInput() {
   //如果是 文件类型 也就是不是 text ，MessageBubble.tsx footer 应该是 share icon 不是 copy
   //useMessageBubble 新增 encryptFile, decryptFile
 
+  const encryptFilePath = useCallback(async (): Promise<void> => {
+    try {
+      const res = await DocumentPicker.getDocumentAsync({});
+      if (res.canceled || !res.assets || res.assets.length === 0) return;
+
+      const sourceUri = res.assets[0].uri;
+      const rustPath = sourceUri.replace('file://', '');
+
+      setInputText(rustPath);
+    } catch (error) {
+      show('encryptFilePath', 'error');
+    }
+  });
+
   return {
     inputText,
     setInputText,
     send,
-    attachFile,
+    encryptFilePath,
   };
 }

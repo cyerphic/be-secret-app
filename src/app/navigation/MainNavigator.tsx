@@ -7,15 +7,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../../features/home/screens';
 import SetScreen from '../../features/settings/screens';
-import EncryptScreen from '../../features/home/screens/Encrypt';
-import DecryptScreen from '../../features/home/screens/Decrypt';
 
 export const ROUTES = {
   TAB_NAVIGATOR: 'Tabs',
   HOME_TAB: 'HomeTab',
   SETTINGS_TAB: 'SettingsTab',
-  ENCRYPT: 'Encrypt',
-  DECRYPT: 'Decrypt',
 };
 
 const TAB_ICONS = {
@@ -97,8 +93,6 @@ export default function MainNavigator() {
       }}
     >
       <Stack.Screen name={ROUTES.TAB_NAVIGATOR} component={TabNavigator} />
-      <Stack.Screen name={ROUTES.ENCRYPT} component={EncryptScreen} />
-      <Stack.Screen name={ROUTES.DECRYPT} component={DecryptScreen} />
     </Stack.Navigator>
   );
 }

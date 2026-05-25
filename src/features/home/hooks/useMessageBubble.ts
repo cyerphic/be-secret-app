@@ -4,8 +4,9 @@ import type { ChatMessage } from '../types/messageEntity';
 import { decryptBase, encryptBase, encryptFile, decryptFile } from '../../../lib/cryptCore';
 import { deleteMessageById, updateMessagePayload } from '../queries/homeQueries';
 import { useSnackbar } from '../../../components/SnackBar';
+import { obfuscateFilePath, restoreFilePath } from '../utils';
 
-const CRYPT_PASSWORD = 'be-secret-text-password';
+const CRYPT_PASSWORD = '1f8bbb1660e15f436548c850187205119dff964830b22d18ae362b3f95e';
 
 const toBase64 = (text: string): string => {
   return globalThis.btoa(unescape(encodeURIComponent(text)));
@@ -41,7 +42,7 @@ export default function useMessageBubble(onChanged?: () => void) {
         } else if (message.type === 'file') {
           //
           const rustInPath = message.text;
-          const rustOutPath = `${rustInPath}.enc`;
+          const rustOutPath = obfuscateFilePath(rustInPath);
           await encryptFile(rustInPath, rustOutPath, CRYPT_PASSWORD);
           await updateMessagePayload(message.id, rustOutPath);
           // FileSystem.deleteAsync('file://' + rustInPath).catch(()=>{});
@@ -64,9 +65,7 @@ export default function useMessageBubble(onChanged?: () => void) {
         } else if (message.type === 'file') {
           //
           const rustInPath = message.text;
-          const rustOutPath = rustInPath.endsWith('.enc')
-            ? rustInPath.replace(/\.enc$/, '')
-            : `${rustInPath}`;
+          const rustOutPath = restoreFilePath(rustInPath);
           await decryptFile(rustInPath, rustOutPath, CRYPT_PASSWORD);
           await updateMessagePayload(message.id, rustOutPath);
         }

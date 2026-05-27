@@ -12,7 +12,7 @@ export default memo(function IndexScreen() {
   const [refreshToken, setRefreshToken] = useState(0);
   const [scrollToLatestTrigger, setScrollToLatestTrigger] = useState(0);
   const tabBarHeight = useBottomTabBarHeight();
-  const { height, progress } = useKeyboardAnimation();
+  const { height } = useKeyboardAnimation();
 
   const handleSendSuccess = useCallback(() => {
     setRefreshToken((prev) => prev + 1);
@@ -36,33 +36,26 @@ export default memo(function IndexScreen() {
   return (
     <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
       {/* header */}
-      <Header style={{ backgroundColor: colors.surface, zIndex: 10 }} header="private" />
-
-      <Animated.View style={[styles.contentContainer, { transform: [{ translateY: stickyTranslateY }] }]}>
-        <View style={styles.listWrapper}>
-          <MessageList
-            refreshToken={refreshToken}
-            onMessageChanged={handleSendSuccess}
-            scrollToLatestTrigger={scrollToLatestTrigger}
-          />
-        </View>
-
-        {/* 聊天输入框 */}
-        <InputContainer onSendSuccess={handleSendSuccess} onInputFocus={handleInputFocus} />
-      </Animated.View>
+      <Header style={{ backgroundColor: colors.surface }} header="private" />
+        {/* message list */}
+        <MessageList
+          refreshToken={refreshToken}
+          onMessageChanged={handleSendSuccess}
+          scrollToLatestTrigger={scrollToLatestTrigger}
+        />
+        {/* input container */}
+        <Animated.View style={{ transform: [{ translateY: stickyTranslateY }] }}>
+          <InputContainer onSendSuccess={handleSendSuccess} onInputFocus={handleInputFocus} />
+        </Animated.View>
     </View>
   );
 });
 
 const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+  },
   page: { 
     flex: 1,
-    overflow: 'hidden',
   },
-  contentContainer: {
-    flex: 1,
-  },
-  listWrapper: {
-    flex: 1,
-  }
 });

@@ -11,21 +11,22 @@ export default function useMessageInput() {
   const { show } = useSnackbar();
 
   const send = useCallback(async (): Promise<boolean> => {
-    const normalized = inputText.trim();
-    if (!normalized) {
+    const message = inputText.trim();
+    if (!message) {
       return false;
     }
 
     const currentType = messageType;
 
     setInputText('');
+    setMessageType('text');
 
     const now = Date.now();
     try {
       await insertMessage(
         mapCreateMessagePayloadToDbRow({
           id: `msg-${now}`,
-          text: normalized,
+          text: message,
           createdAt: now,
           type: currentType,
         })
@@ -33,23 +34,37 @@ export default function useMessageInput() {
       return true;
     } catch (error) {
       show('insertMessage', 'error');
-      setInputText(normalized);
+      setInputText(message);
+      setMessageType(currentType);
       return false;
     }
-  }, [inputText]);
+  }, [inputText, messageType]);
 
-  const encryptFilePath = async () => {
+  const getFilePath = async () => {
     try {
-      const res = await DocumentPicker.getDocumentAsync({});
+      const res = await DocumentPicker.getDocumentAsync({
+        copyToCacheDirectory: false,
+      });
+      
       if (res.canceled || !res.assets || res.assets.length === 0) return;
 
-      const sourceUri = res.assets[0].uri;
-      const rustPath = sourceUri.replace('file://', '');
+      const asset = res.assets[0];
+      const cachedUri = asset.uri;
+      const originalName = asset.name;
 
-      setInputText(rustPath);
+      const correctedUri = `${FileSystem.cacheDirectory}${originalName}`;
+
+      await FileSystem.copyAsync({
+        from: cachedUri,
+        to: correctedUri,
+      });
+
+      const filePath = correctedUri.replace('file://', '');
+
+      setInputText(filePath);
       setMessageType('file');
     } catch (error) {
-      show('encryptFilePath', 'error');
+      show('getFilePath', 'error');
     }
   };
 
@@ -57,7 +72,6 @@ export default function useMessageInput() {
     inputText,
     setInputText,
     send,
-    encryptFilePath,
-    messageType,
+    getFilePath,
   };
 }

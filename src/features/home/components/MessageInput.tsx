@@ -14,17 +14,17 @@ type InputContainerProps = {
 
 export default memo(function InputContainer({ onSendSuccess, onInputFocus }: InputContainerProps) {
   const { colors } = useTheme();
-  const { inputText, setInputText, send, encryptFilePath } = useMessageInput();
+  const { inputText, setInputText, send, getFilePath } = useMessageInput();
 
   return (
     <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
       <View style={[styles.inputWrapper, { backgroundColor: colors.surface }]}>
         {/* 左侧：功能按钮 */}
         <IconButton
-          icon="plus" 
+          icon="plus"
           size={28}
           iconColor={colors.onSurfaceVariant}
-          onPress={encryptFilePath}
+          onPress={getFilePath}
         />
 
         {/* 中间：多行文本输入框 */}
@@ -47,13 +47,12 @@ export default memo(function InputContainer({ onSendSuccess, onInputFocus }: Inp
           iconColor={inputText.trim().length > 0 ? colors.primary : colors.onSurfaceVariant}
           onPress={async () => {
             if (inputText.trim().length > 0) {
-              console.log('发送消息:', inputText);
               const sent = await send();
               if (sent) {
                 onSendSuccess?.();
               }
             } else {
-              console.log('开始语音输入...');
+              //console.log('开始语音输入...');
             }
           }}
         />

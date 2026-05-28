@@ -14,7 +14,7 @@ export const listMessages = async (): Promise<DbMessageRow[]> => {
   const db = getDatabaseClient();
 
   const rows = await db.getAllAsync<DbMessageRow>(
-    'SELECT id, msg_type, created_at, encrypted_payload FROM messages ORDER BY created_at ASC;'
+    'SELECT id, msg_type, created_at, encrypted_payload FROM messages ORDER BY created_at DESC;'
   );
 
   return rows;

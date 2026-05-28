@@ -10,17 +10,11 @@ import { useKeyboardAnimation } from 'react-native-keyboard-controller';
 export default memo(function IndexScreen() {
   const { colors } = useTheme();
   const [refreshToken, setRefreshToken] = useState(0);
-  const [scrollToLatestTrigger, setScrollToLatestTrigger] = useState(0);
   const tabBarHeight = useBottomTabBarHeight();
-  const { height, progress } = useKeyboardAnimation();
+  const { height } = useKeyboardAnimation();
 
   const handleSendSuccess = useCallback(() => {
     setRefreshToken((prev) => prev + 1);
-    setScrollToLatestTrigger((prev) => prev + 1);
-  }, []);
-
-  const handleInputFocus = useCallback(() => {
-    setScrollToLatestTrigger((prev) => prev + 1);
   }, []);
 
   const stickyTranslateY = useMemo(() => {
@@ -44,10 +38,9 @@ export default memo(function IndexScreen() {
             <MessageList
               refreshToken={refreshToken}
               onMessageChanged={handleSendSuccess}
-              scrollToLatestTrigger={scrollToLatestTrigger}
             />
           </View>
-          <InputContainer onSendSuccess={handleSendSuccess} onInputFocus={handleInputFocus} />
+          <InputContainer onSendSuccess={handleSendSuccess} />
         </Animated.View>
       </View>
     </View>

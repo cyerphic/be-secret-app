@@ -11,7 +11,7 @@ type MessageListProps = {
 };
 
 export default memo(function MessageList({ refreshToken = 0, onMessageChanged, scrollToLatestTrigger = 0 }: MessageListProps) {
-  const { messages, isKeyboardVisible } = useMessageList(refreshToken);
+  const { messages } = useMessageList(refreshToken);
   const listRef = useRef<any>(null);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default memo(function MessageList({ refreshToken = 0, onMessageChanged, s
   }, [scrollToLatestTrigger]);
 
   return (
-    <View style={[styles.container, { paddingBottom: isKeyboardVisible ? 280 : 16 }]}>
+    <View style={styles.container}>
       <FlashList
         ref={listRef}
         data={messages}

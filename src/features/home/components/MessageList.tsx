@@ -11,6 +11,19 @@ type MessageListProps = {
 
 export default memo(function MessageList({ refreshToken = 0, onMessageChanged }: MessageListProps) {
   const { messages } = useMessageList(refreshToken);
+  //const listRef = useRef<any>(null);
+
+  {/*
+  useEffect(() => {
+    if (!listRef.current) return;
+
+    const timer = setTimeout(() => {
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [messages]);
+  */}
 
   return (
     <View style={styles.container}>

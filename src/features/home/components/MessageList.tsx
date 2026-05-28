@@ -45,6 +45,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
+    flexGrow: 1,
+    justifyContent: 'flex-end',
     paddingHorizontal: 14,
     paddingTop: 10,
     paddingBottom: 16,

@@ -7,11 +7,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../../features/home/screens';
 import SetScreen from '../../features/settings/screens';
+import PrivateKeyScreen from '../../features/settings/screens/PrivateKey';
 
 export const ROUTES = {
   TAB_NAVIGATOR: 'Tabs',
   HOME_TAB: 'HomeTab',
   SETTINGS_TAB: 'SettingsTab',
+  PRIVATEKEY_SETTINGS: 'PrivateKeySettings',
 };
 
 const TAB_ICONS = {
@@ -93,6 +95,7 @@ export default function MainNavigator() {
       }}
     >
       <Stack.Screen name={ROUTES.TAB_NAVIGATOR} component={TabNavigator} />
+      <Stack.Screen name={ROUTES.PRIVATEKEY_SETTINGS} component={PrivateKeyScreen} />
     </Stack.Navigator>
   );
 }

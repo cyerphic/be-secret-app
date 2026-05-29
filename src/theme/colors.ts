@@ -39,6 +39,8 @@ type ProductPalette = Record<ThemeTone, Palette>;
 export const appPalette: ProductPalette = {
   light: {
     // === Brand Colors (Modern iOS/Material Blue) ===
+    primaryGreen: '#28a745',
+
     primary: '#0B5FFF',
     background: '#F8FAFC',
 
@@ -73,6 +75,8 @@ export const appPalette: ProductPalette = {
 
   dark: {
     // === Brand Colors (Elevated Brightness for OLED) ===
+    primaryGreen: '#3fb950',
+    
     primary: '#82A9FF',
     background: '#0B1220',
 

@@ -3,14 +3,16 @@ import {
   View, 
   Text, 
   StyleSheet, 
-  ScrollView, 
-  TouchableOpacity
+  TouchableOpacity, 
+  LayoutAnimation
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button, Appbar, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import KeyList from '../components/KeyList';
+import KeyInput from '../components/KeyInput';
 import usePrivateKey from '../hooks/usePrivateKey';
 
 export default function PrivateKeyScreen() {
@@ -27,32 +29,43 @@ export default function PrivateKeyScreen() {
     refreshKeyList, 
     triggerListRefresh,
     activeTab,
-    setActiveTab 
+    setActiveTab,
+    keyInputVisible,
+    setKeyInputVisible 
   } = usePrivateKey();
 
   const textColor = '#1c1c1e';
   const subTextColor = '#8e8e93';
+
+  const toggleInput = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setKeyInputVisible(!keyInputVisible);
+  };
 
   return (
     <View style={[styles.page, { backgroundColor: colors.surfaceVariant }]}>
       <Appbar.Header style={{ backgroundColor: colors.surfaceVariant }}>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content 
-          title="PrivateKey Generator" 
+          title="Settings" 
           titleStyle={{ fontSize: 18 }}
         />
       </Appbar.Header>
 
-      <ScrollView 
+      <KeyboardAwareScrollView 
         style={styles.container} 
-        showsVerticalScrollIndicator={false} 
         contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bottomOffset={20}
+        keyboardShouldPersistTaps="handled"
       >
         
         {/* Password Display Card */}
         <View style={styles.card}>
           <View style={styles.passwordHeader}>
-            <Text style={styles.passwordText}>{key}</Text>
+            <Text style={key ? styles.passwordText : styles.tipsText}>
+              {key ? key : 'press sync icon to generate a new private key.'}
+            </Text>
           </View>
 
           {/* Strength Bar */}
@@ -103,11 +116,26 @@ export default function PrivateKeyScreen() {
         </View>
 
         {/* Manual Entry Button */}
-        <TouchableOpacity style={styles.manualEntryCard} onPress={handleManualSaveKey}>
+        <TouchableOpacity 
+          style={[styles.manualEntryCard, keyInputVisible && styles.manualEntryCardExpanded]} 
+          onPress={toggleInput} 
+          activeOpacity={0.7}
+        >
           <Feather name="edit-2" size={20} color={textColor} style={styles.manualIcon} />
           <Text style={styles.manualEntryText}>Enter a password manually</Text>
-          <Ionicons name="chevron-forward" size={20} color={subTextColor} />
+          <Ionicons 
+            name={keyInputVisible ? "chevron-down" : "chevron-forward"} 
+            size={20} 
+            color={subTextColor} 
+          />
         </TouchableOpacity>
+
+        {/* manual key input */}
+        {keyInputVisible && (
+          <View style={styles.keyInputContainer}>
+            <KeyInput onSave={handleManualSaveKey} />
+          </View>
+        )}
 
         {/* Footer Note */}
         <View style={[styles.footer, { paddingBottom: insets.bottom }]}>
@@ -117,7 +145,7 @@ export default function PrivateKeyScreen() {
           </Text>
         </View>
         
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 }
@@ -165,6 +193,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 24,
+  },
+  tipsText: {
+    color: '#8e8e93',
+    fontSize: 16,
+    lineHeight: 26,
   },
   lengthInfoText: {
     color: '#8e8e93',
@@ -215,6 +248,13 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 24,
   },
+  manualEntryCardExpanded: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderBottomWidth: 0, 
+    backgroundColor: '#ffffff',
+    marginBottom: 0, 
+  },
   manualIcon: {
     marginRight: 12,
   },
@@ -222,6 +262,17 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#1c1c1e',
+  },
+  keyInputContainer: {
+    padding: 16,
+    backgroundColor: '#ffffff',
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderTopWidth: 0,
+    marginBottom: 24,
+    overflow: 'hidden',
   },
   footer: {
     flexDirection: 'row',

@@ -32,6 +32,16 @@ export const deleteMessageById = async (id: string): Promise<void> => {
   await db.runAsync('DELETE FROM messages WHERE id = ?;', [id]);
 };
 
+export const getActivePrivateKey = async (): Promise<string | null> => {
+  const db = getDatabaseClient();
+
+  const row = await db.getFirstAsync<{ key_meta: string }>(
+    'SELECT key_meta FROM private_keys WHERE active = 1'
+  );
+
+  return row ? row.key_meta : null;
+};
+
 //export const getMessageTypeById = async (id: string): Promise<void> => {
 //  const db = getDatabaseClient();
 

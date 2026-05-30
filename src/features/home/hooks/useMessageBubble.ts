@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import Clipboard from '@react-native-clipboard/clipboard';
 import type { ChatMessage } from '../types/messageEntity';
 import { decryptBase, encryptBase, encryptFile, decryptFile } from '../../../lib/cryptCore';
-import { deleteMessageById, updateMessagePayload } from '../queries/homeQueries';
+import { deleteMessageById, updateMessagePayload, getActivePrivateKey } from '../queries/homeQueries';
 import { useSnackbar } from '../../../components/SnackBar';
 import { obfuscateFilePath, restoreFilePath } from '../utils';
 
@@ -14,6 +14,15 @@ const toBase64 = (text: string): string => {
 
 const fromBase64 = (value: string): string => {
   return decodeURIComponent(escape(globalThis.atob(value)));
+};
+
+export const getCurrentPrivateKey = async (): Promise<string> => {
+  try {
+    const activeKey = await getActivePrivateKey();
+    return activeKey || CRYPT_PASSWORD;
+  } catch (error) {
+    return CRYPT_PASSWORD;
+  }
 };
 
 export default function useMessageBubble(onChanged?: () => void) {
@@ -35,15 +44,17 @@ export default function useMessageBubble(onChanged?: () => void) {
   const encryptMessage = useCallback(
     async (message: ChatMessage): Promise<void> => {
       try {
+        const currentPassword = await getCurrentPrivateKey();
+
         if (message.type === 'text') {
           const plaintextBase64 = toBase64(message.text);
-          const encrypted = await encryptBase(plaintextBase64, CRYPT_PASSWORD);
+          const encrypted = await encryptBase(plaintextBase64, currentPassword);
           await updateMessagePayload(message.id, encrypted);
         } else if (message.type === 'file') {
           //
           const rustInPath = message.text;
           const rustOutPath = obfuscateFilePath(rustInPath);
-          await encryptFile(rustInPath, rustOutPath, CRYPT_PASSWORD);
+          await encryptFile(rustInPath, rustOutPath, currentPassword);
           await updateMessagePayload(message.id, rustOutPath);
           // FileSystem.deleteAsync('file://' + rustInPath).catch(()=>{});
         }
@@ -58,15 +69,17 @@ export default function useMessageBubble(onChanged?: () => void) {
   const decryptMessage = useCallback(
     async (message: ChatMessage): Promise<void> => {
       try {
+        const currentPassword = await getCurrentPrivateKey();
+        
         if (message.type === 'text') {
-          const decryptedBase64 = await decryptBase(message.text, CRYPT_PASSWORD);
+          const decryptedBase64 = await decryptBase(message.text, currentPassword);
           const plaintext = fromBase64(decryptedBase64);
           await updateMessagePayload(message.id, plaintext);
         } else if (message.type === 'file') {
           //
           const rustInPath = message.text;
           const rustOutPath = restoreFilePath(rustInPath);
-          await decryptFile(rustInPath, rustOutPath, CRYPT_PASSWORD);
+          await decryptFile(rustInPath, rustOutPath, currentPassword);
           await updateMessagePayload(message.id, rustOutPath);
         }
         onChanged?.();

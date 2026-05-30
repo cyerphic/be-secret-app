@@ -12,15 +12,16 @@ export default function usePrivateKey() {
   const keyLength = `${key?.length || 0}`;
   const [refreshKeyList, setrefreshKeyList] = useState(0);
   const [activeTab, setActiveTab] = useState<'auto' | 'manual'>('auto');
+  const [keyInputVisible, setKeyInputVisible] = useState<boolean>(false);
 
   const refreshKey = useCallback(() => {
     const newKey = generateRandomNumber();
     setKey(String(newKey));
   }, []);
 
-  const handleAutoSaveKey = useCallback(async (): Promise<boolean> => {
+  const handleAutoSaveKey = useCallback(async (): Promise<void> => {
     if (!key) {
-      return false;
+      return;
     }
 
     const now = Date.now();
@@ -39,8 +40,26 @@ export default function usePrivateKey() {
     }
   }, [key]);
 
-  // todo
-  const handleManualSaveKey = useCallback(async (): Promise<boolean> => {}
+  const handleManualSaveKey = useCallback(async (key: string): Promise<void> => {
+    if (!key) {
+      return;
+    }
+
+    const now = Date.now();
+    try {
+      const payload = mapCreatePrivateKeyPayloadToDbRow({
+        keyType: 0, // 1 = auto generate, 0 = manual input;
+        keyMeta: key,
+        createdAt: now,
+      })
+      await insertKey(payload);
+      // refresh key list
+      setrefreshKeyList(prev => prev + 1);
+      show('add success', 'success');
+    } catch (error) {
+      show('insertKey error', 'error');
+    }
+  }, []);
 
   const triggerListRefresh = useCallback(() => {
     setrefreshKeyList(prev => prev + 1);
@@ -56,5 +75,7 @@ export default function usePrivateKey() {
     triggerListRefresh,
     activeTab,
     setActiveTab,
+    keyInputVisible,
+    setKeyInputVisible,
   };
 }

@@ -17,7 +17,7 @@ export default memo(function InputContainer({ onSendSuccess, onInputFocus }: Inp
   const { inputText, setInputText, send, getFilePath } = useMessageInput();
 
   return (
-    <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
+    <View style={[styles.inputContainer, { backgroundColor: colors.surfaceVariant }]}>
       <View style={[styles.inputWrapper, { backgroundColor: colors.surface }]}>
         {/* 左侧：功能按钮 */}
         <IconButton

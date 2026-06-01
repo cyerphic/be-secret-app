@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontFamily: 'monospace',
-    color: '#1c1c1e',
+    color: '#28a745',
     lineHeight: 24,
     marginRight: 10,
   },

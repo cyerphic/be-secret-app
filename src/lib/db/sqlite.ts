@@ -25,9 +25,9 @@ export const initDatabaseInfrastructure = async (): Promise<void> => {
   try {
     // Call Modules 层执行建表逻辑
     await executeSchema(db);
-    console.log('[DB Infra] INITIAL SUCCESS');
+    //console.log('[DB Infra] INITIAL SUCCESS');
   } catch (error) {
-    console.error('[DB Infra] INITIAL FAIL:', error);
+    //console.error('[DB Infra] INITIAL FAIL:', error);
     throw error;
   }
 };

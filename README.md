@@ -4,8 +4,13 @@ OK, what we're trying to do here: we want to encrypt our own messages before sen
 * **Bridge:** Using UniFFI to bridge Rust code to Kotlin (for Android); no iOS for now.
 * **Frontend:** We are using React Native Expo and SQLite.
 
-<img src="./assets/introduce_home.jpg" width="240" />
-<img src="./assets/introduce_setting.jpg" width="240" />
+## 📱 Screenshots
+<table>
+  <tr>
+    <td align="center"><img src="./assets/introduce_home.jpg" width="220" /><br><b>Home</b></td>
+    <td align="center"><img src="./assets/introduce_setting.jpg" width="220" /><br><b>Settings</b></td>
+  </tr>
+</table>
 
 ## Todo
 - [ ] Encrypt audio
